@@ -65,3 +65,12 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
     return sendResponse(res, StatusCodes.NOT_FOUND, null, error.message);
   }
 };
+
+export const logout = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await authService.logout(req.user.id);
+    return sendResponse(res, StatusCodes.OK, result);
+  } catch (error: any) {
+    return sendResponse(res, StatusCodes.BAD_REQUEST, null, error.message);
+  }
+};

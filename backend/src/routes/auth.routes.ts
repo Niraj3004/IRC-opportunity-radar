@@ -14,6 +14,7 @@ router.post('/forgot', authLimiter, validate(schemas.forgotPasswordSchema), auth
 router.post('/reset', authLimiter, validate(schemas.resetPasswordSchema), authController.resetPassword);
 router.post('/refresh', apiLimiter, validate(schemas.refreshSchema), authController.refresh);
 
+router.post('/logout', authenticate, authController.logout);
 router.get('/me', authenticate, authController.me);
 
 export default router;

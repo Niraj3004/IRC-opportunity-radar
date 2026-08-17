@@ -127,3 +127,12 @@ export const getMe = async (userId: string) => {
   if (!user) throw new Error('User not found');
   return user;
 };
+
+export const logout = async (userId: string) => {
+  const user = await User.findById(userId);
+  if (user) {
+    user.refreshToken = undefined;
+    await user.save();
+  }
+  return { message: 'Logged out successfully' };
+};
