@@ -2,8 +2,8 @@ import User from '../models/User';
 import { hashString, compareHash } from '../utils/hash';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { generateRandomToken } from '../utils/tokens';
-import { emailTemplates } from '../templates/emailTemplates';
-
+import { getVerifyEmail, getResetPasswordEmail, getWelcomeEmail } from '../templates/emailTemplates';
+import { sendEmail } from './email.service';
 export const register = async (data: any) => {
   const existingUser = await User.findOne({ email: data.email });
   if (existingUser) {
@@ -23,8 +23,8 @@ export const register = async (data: any) => {
 
   await user.save();
 
-  // Simulate sending email
-  console.log(`[EMAIL] To: ${data.email}, Subject: Verify Email, Body:\n${emailTemplates.verifyEmail(verifyToken)}`);
+  // Send verify email
+  await sendEmail(data.email, 'Verify Your Email', getVerifyEmail(verifyToken));
 
   return { message: 'Registration successful. Please check your email to verify your account.' };
 };
@@ -74,6 +74,9 @@ export const verifyEmail = async (token: string) => {
   user.verifyToken = undefined;
   await user.save();
 
+  // Send welcome email upon successful verification
+  await sendEmail(user.email, 'Welcome to Opportunity Radar!', getWelcomeEmail(user.name));
+
   return { message: 'Email verified successfully. You may now login.' };
 };
 
@@ -85,8 +88,8 @@ export const forgotPassword = async (email: string) => {
   user.resetToken = resetToken;
   await user.save();
 
-  // Simulate sending email
-  console.log(`[EMAIL] To: ${email}, Subject: Password Reset, Body:\n${emailTemplates.resetPassword(resetToken)}`);
+  // Send reset email
+  await sendEmail(email, 'Password Reset', getResetPasswordEmail(resetToken));
 
   return { message: 'If the email exists, a reset link has been sent.' };
 };

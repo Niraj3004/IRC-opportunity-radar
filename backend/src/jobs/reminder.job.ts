@@ -4,8 +4,9 @@ import Application from '../models/Application';
 import Opportunity from '../models/Opportunity';
 import Notification from '../models/Notification';
 import User from '../models/User';
-import { simulateSendEmail } from '../services/notification.service';
-
+import { sendEmail } from '../services/email.service';
+import { getDeadlineReminderEmail } from '../templates/emailTemplates';
+import { env } from '../config/env.config';
 export const startReminderJob = () => {
   // Run every day at 8:00 AM
   cron.schedule('0 8 * * *', async () => {
@@ -64,7 +65,11 @@ export const startReminderJob = () => {
             linkUrl: `/opportunities/${opp._id}`
           });
 
-          simulateSendEmail(user.email, 'Upcoming Deadline Reminder', `Hi ${user.name},\n\nThe deadline for ${opp.title} is in exactly 3 days on ${opp.deadline?.toDateString()}. Don't forget to apply!`);
+          await sendEmail(
+            user.email,
+            'Upcoming Deadline Reminder',
+            getDeadlineReminderEmail(user.name, opp.title, 3, `${env.CLIENT_URL}/opportunities/${opp._id}`)
+          );
           sentCount++;
         }
       }

@@ -2,10 +2,9 @@ import User from '../models/User';
 import Notification from '../models/Notification';
 import { IOpportunity } from '../models/Opportunity';
 
-// Simulate sending an email (to be implemented with real SMTP later)
-export const simulateSendEmail = (email: string, subject: string, body: string) => {
-  console.log(`[EMAIL] 🚀 Sent to: ${email} | Subject: ${subject}`);
-};
+import { sendEmail } from './email.service';
+import { getMatchNotificationEmail } from '../templates/emailTemplates';
+import { env } from '../config/env.config';
 
 export const notifyMatches = async (opportunity: IOpportunity) => {
   try {
@@ -30,10 +29,10 @@ export const notifyMatches = async (opportunity: IOpportunity) => {
       
       // Send real-time emails
       matchedUsers.forEach(user => {
-        simulateSendEmail(
+        sendEmail(
           user.email,
           'New Matching Opportunity!',
-          `Hi ${user.name},\n\nA new ${opportunity.type} matching your interests was just published: ${opportunity.title}\n\nCheck it out: ${opportunity.url}`
+          getMatchNotificationEmail(user.name, opportunity.title, `${env.CLIENT_URL}/opportunities/${opportunity._id}`)
         );
       });
     }

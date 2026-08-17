@@ -21,6 +21,9 @@ const envSchema = z.object({
   FETCH_USER_AGENT: z.string().default('OpportunityRadarBot/1.0'),
   MAX_LLM_CALLS_PER_RUN: z.string().default('10'),
   AUTO_PUBLISH_THRESHOLD: z.string().default('0.8'),
+  CLOUDINARY_CLOUD_NAME: z.string().optional(),
+  CLOUDINARY_API_KEY: z.string().optional(),
+  CLOUDINARY_API_SECRET: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

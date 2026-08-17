@@ -1,7 +1,9 @@
 import cron from 'node-cron';
 import User from '../models/User';
 import Opportunity from '../models/Opportunity';
-import { simulateSendEmail } from '../services/notification.service';
+import { sendEmail } from '../services/email.service';
+import { getDailyDigestEmail } from '../templates/emailTemplates';
+import { env } from '../config/env.config';
 
 export const startDigestJob = () => {
   // Run daily at 9:00 AM
@@ -30,11 +32,12 @@ export const startDigestJob = () => {
         } as any).limit(10).lean();
 
         if (opps.length > 0) {
-          simulateSendEmail(
+          // 4. Send email
+          const htmlList = opps.map(opp => `<li><a href="${env.CLIENT_URL}/opportunities/${opp._id}">${opp.title}</a> (${opp.type})</li>`).join('');
+          await sendEmail(
             user.email,
-            `Your Daily Opportunity Digest: ${opps.length} New Matches!`,
-            `Hi ${user.name},\n\nWe found ${opps.length} new opportunities that match your interests:\n` +
-            opps.map(o => `- ${o.title} (${o.type})`).join('\n')
+            `Your Daily Digest: ${opps.length} new opportunities`,
+            getDailyDigestEmail(user.name, opps.length, htmlList)
           );
           sentCount++;
         }

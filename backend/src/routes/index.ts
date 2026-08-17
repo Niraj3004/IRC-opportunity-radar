@@ -7,6 +7,7 @@ import trackerRoutes from './tracker.routes';
 import reviewRoutes from './review.routes';
 import notificationRoutes from './notification.routes';
 import adminRoutes from './admin.routes';
+import uploadRoutes from './upload.routes';
 import swaggerUi from 'swagger-ui-express';
 import yaml from 'yamljs';
 import path from 'path';
@@ -18,6 +19,7 @@ const swaggerDocument = yaml.load(path.join(__dirname, '../docs/swagger.yaml'));
 router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 router.use('/auth', authRoutes);
+router.use('/upload', uploadRoutes);
 router.use('/agent', agentRoutes);
 router.use('/opportunities', opportunityRoutes);
 router.use('/bookmarks', bookmarkRoutes);
