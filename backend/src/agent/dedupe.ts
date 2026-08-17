@@ -72,9 +72,9 @@ export const processAndDeduplicate = async (
       amount: item.amount || undefined,
       sourceId,
       rawExtract: raw,
-      confidence: 0.9, // Default, will be recalculated in B9 scoring phase
+      confidence: 0.9, // Default, will be recalculated in the scoring phase
       dedupeKey,
-      status: 'pending',
+      status: 'pending'
     });
   }
 
