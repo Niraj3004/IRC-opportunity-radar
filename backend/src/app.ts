@@ -28,6 +28,11 @@ app.get('/api/test/protected', authenticate, authorize(Roles.MEMBER), (req, res)
 
 app.use('/api', routes);
 
+import { startScheduler } from './agent/scheduler';
+
 app.use(errorMiddleware);
+
+// Start the autonomous agent background scheduler
+startScheduler();
 
 export default app;
