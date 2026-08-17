@@ -2,6 +2,8 @@ import { GoogleGenAI } from '@google/genai';
 import { env } from '../../config/env.config';
 import { opportunityExtractionSchema, ExtractedOpportunity } from './schemas';
 
+let currentGeminiKeyIndex = 0;
+
 export const extractWithLLM = async (html: string): Promise<ExtractedOpportunity> => {
   const provider = env.LLM_PROVIDER;
   
@@ -10,14 +12,15 @@ export const extractWithLLM = async (html: string): Promise<ExtractedOpportunity
   }
 
   let attempt = 0;
-  const maxRetries = 1;
+  const maxRetries = provider === 'gemini' ? Math.max(3, env.GEMINI_KEYS.length) : 1;
 
   while (attempt <= maxRetries) {
     try {
       let rawJson = '';
 
       if (provider === 'gemini') {
-        const ai = new GoogleGenAI({ apiKey: env.LLM_API_KEY });
+        const apiKey = env.GEMINI_KEYS[currentGeminiKeyIndex % env.GEMINI_KEYS.length];
+        const ai = new GoogleGenAI({ apiKey });
         const response = await ai.models.generateContent({
           model: env.LLM_MODEL || 'gemini-1.5-flash',
           contents: `Extract the scholarship/opportunity details from the following HTML into JSON matching this schema:
@@ -72,10 +75,22 @@ ${html}`,
 
     } catch (error: any) {
       attempt++;
+      
+      const isRateLimit = error.message.includes('429') || error.message.includes('quota');
+      
+      if (provider === 'gemini' && isRateLimit) {
+        currentGeminiKeyIndex++;
+        console.warn(`🔄 Gemini API key rate limited. Switching to key index ${currentGeminiKeyIndex % env.GEMINI_KEYS.length}...`);
+      } else {
+        console.warn(`LLM extraction failed, retrying (${attempt}/${maxRetries})...`);
+      }
+
       if (attempt > maxRetries) {
         throw new Error(`LLM extraction failed after ${maxRetries} retries: ${error.message}`);
       }
-      console.warn(`LLM extraction failed, retrying (${attempt}/${maxRetries})...`);
+      
+      // Delay before retrying (backoff)
+      await new Promise(res => setTimeout(res, 2000 * attempt));
     }
   }
 

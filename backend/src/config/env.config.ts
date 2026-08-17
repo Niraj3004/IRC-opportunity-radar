@@ -3,6 +3,16 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+const getGeminiKeys = () => {
+  const keys: string[] = [];
+  for (let i = 1; i <= 20; i++) {
+    if (process.env[`GEMINI_API_KEY_${i}`]) {
+      keys.push(process.env[`GEMINI_API_KEY_${i}`] as string);
+    }
+  }
+  return keys.length > 0 ? keys : (process.env.LLM_API_KEY ? [process.env.LLM_API_KEY] : []);
+};
+
 const envSchema = z.object({
   PORT: z.string().default('3000'),
   MONGODB_URI: z.string(),
@@ -33,4 +43,7 @@ if (!parsed.success) {
   process.exit(1);
 }
 
-export const env = parsed.data;
+export const env = {
+  ...parsed.data,
+  GEMINI_KEYS: getGeminiKeys(),
+};
