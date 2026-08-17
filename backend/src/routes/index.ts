@@ -6,6 +6,7 @@ import bookmarkRoutes from './bookmark.routes';
 import trackerRoutes from './tracker.routes';
 import reviewRoutes from './review.routes';
 import notificationRoutes from './notification.routes';
+import adminRoutes from './admin.routes';
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use('/bookmarks', bookmarkRoutes);
 router.use('/tracker', trackerRoutes);
 router.use('/review', reviewRoutes);
 router.use('/notifications', notificationRoutes);
+router.use('/admin', adminRoutes);
 
 export default router;
