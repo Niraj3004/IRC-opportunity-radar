@@ -8,6 +8,7 @@ import { authenticate } from './middlewares/auth.middleware';
 import { authorize } from './middlewares/role.middleware';
 import { Roles } from './constants/role.constant';
 import { apiLimiter } from './middlewares/rateLimit.middleware';
+import routes from './routes';
 
 const app = express();
 
@@ -25,8 +26,7 @@ app.get('/api/test/protected', authenticate, authorize(Roles.MEMBER), (req, res)
   sendResponse(res, 200, { user: req.user }, 'You have accessed a protected route');
 });
 
-// Route manager placeholder
-// app.use('/api', routes);
+app.use('/api', routes);
 
 app.use(errorMiddleware);
 
