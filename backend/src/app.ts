@@ -29,10 +29,16 @@ app.get('/api/test/protected', authenticate, authorize(Roles.MEMBER), (req, res)
 app.use('/api', routes);
 
 import { startScheduler } from './agent/scheduler';
+import { startReminderJob } from './jobs/reminder.job';
+import { startDigestJob } from './jobs/digest.job';
 
 app.use(errorMiddleware);
 
 // Start the autonomous agent background scheduler
 startScheduler();
+
+// Start the notification chron jobs
+startReminderJob();
+startDigestJob();
 
 export default app;
