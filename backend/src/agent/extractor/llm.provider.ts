@@ -22,7 +22,7 @@ export const extractWithLLM = async (html: string): Promise<ExtractedOpportunity
         const apiKey = env.GEMINI_KEYS[currentGeminiKeyIndex % env.GEMINI_KEYS.length];
         const ai = new GoogleGenAI({ apiKey });
         const response = await ai.models.generateContent({
-          model: env.LLM_MODEL || 'gemini-1.5-flash',
+          model: env.LLM_MODEL || 'gemini-3.6-flash',
           contents: `Extract the scholarship/opportunity details from the following HTML into JSON matching this schema:
 {
   "title": "string",
