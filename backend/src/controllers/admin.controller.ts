@@ -44,6 +44,13 @@ export const testFetchSource = async (req: Request, res: Response) => {
   } catch (error: any) { sendResponse(res, 500, null, error.message); }
 };
 
+export const forceFetchSource = async (req: Request, res: Response) => {
+  try {
+    const result = await adminService.forceFetchSource(req.params.id as string, req.user!.id);
+    sendResponse(res, 200, result, 'Source force-fetched successfully');
+  } catch (error: any) { sendResponse(res, 500, null, error.message); }
+};
+
 export const getSourceLogs = async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;

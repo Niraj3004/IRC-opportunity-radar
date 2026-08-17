@@ -7,8 +7,15 @@ import trackerRoutes from './tracker.routes';
 import reviewRoutes from './review.routes';
 import notificationRoutes from './notification.routes';
 import adminRoutes from './admin.routes';
+import swaggerUi from 'swagger-ui-express';
+import yaml from 'yamljs';
+import path from 'path';
 
 const router = Router();
+
+// API Documentation
+const swaggerDocument = yaml.load(path.join(__dirname, '../docs/swagger.yaml'));
+router.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 router.use('/auth', authRoutes);
 router.use('/agent', agentRoutes);

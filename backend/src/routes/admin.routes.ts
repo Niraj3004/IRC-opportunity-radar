@@ -17,8 +17,9 @@ router.get('/sources/:id', authorize(Roles.ADMIN, Roles.SUPER_ADMIN), adminContr
 router.patch('/sources/:id', authorize(Roles.ADMIN, Roles.SUPER_ADMIN), adminController.updateSource);
 router.delete('/sources/:id', authorize(Roles.SUPER_ADMIN), adminController.deleteSource);
 
-// Test Fetch
+// Test Fetch & Force Fetch
 router.post('/sources/:id/test', authorize(Roles.ADMIN, Roles.SUPER_ADMIN), adminController.testFetchSource);
+router.post('/sources/:id/fetch', authorize(Roles.ADMIN, Roles.SUPER_ADMIN), adminController.forceFetchSource);
 
 // Logs
 router.get('/sources/:id/logs', authorize(Roles.ADMIN, Roles.SUPER_ADMIN), adminController.getSourceLogs);
@@ -28,7 +29,7 @@ router.get('/audit-logs', authorize(Roles.SUPER_ADMIN), adminController.getAudit
 router.get('/members', authorize(Roles.ADMIN, Roles.SUPER_ADMIN), adminController.getMembers);
 router.patch('/members/:id', authorize(Roles.ADMIN, Roles.SUPER_ADMIN), validate(updateMemberStatusSchema), adminController.updateMember);
 
-// KPIs
-router.get('/kpis', authorize(Roles.ADMIN, Roles.SUPER_ADMIN), adminController.getKPIs);
+// KPIs (Member+ can view KPIs as requested)
+router.get('/kpis', authorize(Roles.MEMBER, Roles.CURATOR, Roles.ADMIN, Roles.SUPER_ADMIN), adminController.getKPIs);
 
 export default router;

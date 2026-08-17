@@ -1,0 +1,59 @@
+openapi: 3.0.0
+info:
+  title: IRC Opportunity Radar API
+  description: Internal API for the IRC Opportunity Radar Agent.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+paths:
+  /opportunities:
+    get:
+      summary: List opportunities
+      tags: [Opportunities]
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A paginated list of opportunities
+  /admin/sources:
+    get:
+      summary: List all scraping sources
+      tags: [Admin]
+      responses:
+        '200':
+          description: List of sources
+  /admin/sources/{id}/fetch:
+    post:
+      summary: Manually trigger fetch and extraction for a source
+      tags: [Admin]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Fetch initiated successfully
+  /kpis:
+    get:
+      summary: System KPIs
+      tags: [Stats]
+      responses:
+        '200':
+          description: System stats

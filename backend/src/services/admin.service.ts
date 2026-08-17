@@ -51,6 +51,22 @@ export const testFetchSource = async (sourceId: string) => {
   }
 };
 
+import { processSingleSource } from '../agent/pipeline';
+
+export const forceFetchSource = async (sourceId: string, adminId: string) => {
+  const source = await Source.findById(sourceId);
+  if (!source) throw new Error('Source not found');
+  
+  await AuditLog.create({
+    actorId: adminId,
+    action: 'force_fetch_source',
+    entityType: 'Source',
+    entityId: source._id
+  });
+
+  return await processSingleSource(source);
+};
+
 export const getSourceLogs = async (sourceId: string, page = 1, limit = 20) => {
   const skip = (page - 1) * limit;
   const [items, total] = await Promise.all([
