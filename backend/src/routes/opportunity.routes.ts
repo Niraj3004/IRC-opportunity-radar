@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getOpportunities, getOpportunityById } from '../controllers/opportunity.controller';
+import { getOpportunities, getOpportunityById, generateCalendar } from '../controllers/opportunity.controller';
 import { authenticate } from '../middlewares/auth.middleware';
 import { authorize } from '../middlewares/role.middleware';
 import { validate } from '../middlewares/validateZod.middleware';
@@ -19,5 +19,6 @@ router.get(
 );
 
 router.get('/:id', getOpportunityById);
+router.get('/:id/calendar', generateCalendar);
 
 export default router;
