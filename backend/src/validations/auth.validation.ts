@@ -21,6 +21,12 @@ export const verifyEmailSchema = z.object({
   }),
 });
 
+export const updateProfileSchema = z.object({
+  body: z.object({
+    interests: z.array(z.string()).optional()
+  })
+});
+
 export const forgotPasswordSchema = z.object({
   body: z.object({
     email: z.string().email('Invalid email address'),

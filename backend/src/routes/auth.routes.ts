@@ -16,5 +16,6 @@ router.post('/refresh', apiLimiter, validate(schemas.refreshSchema), authControl
 
 router.post('/logout', authenticate, authController.logout);
 router.get('/me', authenticate, authController.me);
+router.patch('/profile', authenticate, validate(schemas.updateProfileSchema), authController.updateProfile);
 
 export default router;

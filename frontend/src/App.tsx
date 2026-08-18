@@ -15,6 +15,7 @@ import { VerifyEmail } from './pages/auth/VerifyEmail';
 // Dashboard Pages
 import { Feed } from './pages/dashboard/Feed';
 import { OpportunityDetail } from './pages/dashboard/OpportunityDetail';
+import { Alerts } from './pages/dashboard/Alerts';
 
 // Admin Pages
 import { ReviewQueue } from './pages/admin/ReviewQueue';
@@ -51,7 +52,7 @@ function App() {
                 <Route path="/opportunity/:id" element={<OpportunityDetail />} />
                 <Route path="/bookmarks" element={<Placeholder title="Bookmarks" />} />
                 <Route path="/applied" element={<Placeholder title="Applied Tracker" />} />
-                <Route path="/alerts" element={<Placeholder title="Alerts & Interests" />} />
+                <Route path="/alerts" element={<Alerts />} />
                 <Route path="/notifications" element={<Placeholder title="Notifications" />} />
 
                 {/* Curator+ Routes */}

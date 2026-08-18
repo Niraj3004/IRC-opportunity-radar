@@ -139,3 +139,15 @@ export const logout = async (userId: string) => {
   }
   return { message: 'Logged out successfully' };
 };
+
+export const updateProfile = async (userId: string, interests?: string[]) => {
+  const user = await User.findById(userId).select('-passwordHash -refreshToken -resetToken -verifyToken');
+  if (!user) throw new Error('User not found');
+  
+  if (interests !== undefined) {
+    user.interests = interests;
+  }
+  
+  await user.save();
+  return user;
+};

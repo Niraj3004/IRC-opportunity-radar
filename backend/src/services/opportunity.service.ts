@@ -116,6 +116,7 @@ export const getPublishedOpportunities = async (query: any) => {
 export const getOpportunityById = async (id: string) => {
   const opp = await Opportunity.findOne({ _id: id, status: 'published' })
     .select('-rawExtract -dedupeKey')
+    .populate('sourceId', 'name url type')
     .lean();
     
   if (!opp) {
