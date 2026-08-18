@@ -17,6 +17,9 @@ import { VerifyEmail } from './pages/auth/VerifyEmail';
 import { Feed } from './pages/dashboard/Feed';
 import { OpportunityDetail } from './pages/dashboard/OpportunityDetail';
 
+// Admin Pages
+import { ReviewQueue } from './pages/admin/ReviewQueue';
+
 const queryClient = new QueryClient();
 
 // Placeholder components for Phase F2 testing
@@ -54,7 +57,7 @@ function App() {
 
                 {/* Curator+ Routes */}
                 <Route element={<RequireRole allowedRoles={['curator', 'admin', 'super_admin']} />}>
-                  <Route path="/review" element={<Placeholder title="Review Queue" />} />
+                  <Route path="/review" element={<ReviewQueue />} />
                 </Route>
 
                 {/* Admin+ Routes */}
