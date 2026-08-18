@@ -31,14 +31,18 @@ app.use('/api', routes);
 import { startScheduler } from './agent/scheduler';
 import { startReminderJob } from './jobs/reminder.job';
 import { startDigestJob } from './jobs/digest.job';
+import { startPublishJob } from './jobs/publish.job';
+import { startCleanupJob } from './jobs/cleanup.job';
 
 app.use(errorMiddleware);
 
 // Start the autonomous agent background scheduler
 startScheduler();
 
-// Start the notification chron jobs
+// Start the chron jobs
 startReminderJob();
 startDigestJob();
+startPublishJob();
+startCleanupJob();
 
 export default app;

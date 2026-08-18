@@ -19,7 +19,7 @@ export interface IOpportunity extends Document {
   sourceId: mongoose.Types.ObjectId;
   rawExtract?: mongoose.Schema.Types.Mixed;
   confidence: number; // 0-1
-  status: 'pending' | 'published' | 'rejected' | 'archived';
+  status: 'pending' | 'approved' | 'published' | 'rejected' | 'archived';
   dedupeKey: string;
   reviewedBy?: mongoose.Types.ObjectId;
   publishedAt?: Date;
@@ -44,7 +44,7 @@ const OpportunitySchema = new Schema<IOpportunity>(
     sourceId: { type: Schema.Types.ObjectId, ref: 'Source', required: true },
     rawExtract: { type: Schema.Types.Mixed },
     confidence: { type: Number, required: true, min: 0, max: 1 },
-    status: { type: String, enum: ['pending', 'published', 'rejected', 'archived'], default: 'pending' },
+    status: { type: String, enum: ['pending', 'approved', 'published', 'rejected', 'archived'], default: 'pending' },
     dedupeKey: { type: String, required: true, index: true },
     reviewedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     publishedAt: { type: Date },

@@ -2,23 +2,34 @@ import cron from 'node-cron';
 import Opportunity from '../models/Opportunity';
 
 export const startCleanupJob = () => {
-  // Run once a week on Sunday at 3:00 AM (0 3 * * 0)
+  // Run every Sunday at 3:00 AM
   cron.schedule('0 3 * * 0', async () => {
-    console.log('🧹 [Cron] Running scheduled Database Cleanup Job...');
+    console.log('🧹 Cleanup: Waking up database cleaner...');
     try {
-      // Find all opportunities where the deadline is older than 30 days ago
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      // Calculate the date exactly 14 days ago
+      const twoWeeksAgo = new Date();
+      twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
 
-      const result = await Opportunity.deleteMany({
-        deadline: { $lt: thirtyDaysAgo }
+      // Find all opportunities where the deadline passed more than 14 days ago
+      const expiredOpps = await Opportunity.find({
+        deadline: { $lt: twoWeeksAgo }
       });
 
-      console.log(`✅ [Cleanup Job] Deleted ${result.deletedCount} expired opportunities to save database space.`);
+      if (expiredOpps.length === 0) {
+        console.log('🧹 Cleanup: Database is already clean. No old grants found.');
+        return;
+      }
+
+      console.log(`🧹 Cleanup: Found ${expiredOpps.length} expired grants older than 2 weeks. Deleting...`);
+
+      // Delete them
+      const result = await Opportunity.deleteMany({
+        deadline: { $lt: twoWeeksAgo }
+      });
+
+      console.log(`   ✅ Cleanup Complete: Deleted ${result.deletedCount} old grants from the database.`);
     } catch (error) {
-      console.error('❌ [Cleanup Job] failed:', error);
+      console.error('❌ Cleanup: Failed to run database cleanup:', error);
     }
   });
-
-  console.log('✅ Cleanup Job scheduled (runs weekly)');
 };

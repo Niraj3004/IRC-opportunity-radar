@@ -30,11 +30,10 @@ export const scoreAndRoute = (opportunity: Partial<IOpportunity>): void => {
 
   opportunity.confidence = Math.max(0, Math.min(1, score));
 
-  // Determine routing
+  // Determine routing (Hold for Drip Publishing)
   const threshold = parseFloat(env.AUTO_PUBLISH_THRESHOLD || '0.8');
   if (opportunity.confidence >= threshold) {
-    opportunity.status = 'published';
-    opportunity.publishedAt = new Date();
+    opportunity.status = 'approved'; // Replaced 'published' for human-illusion drip feed
   } else {
     opportunity.status = 'pending';
   }
