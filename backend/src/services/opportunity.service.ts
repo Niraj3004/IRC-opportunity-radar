@@ -24,7 +24,8 @@ export const getPublishedOpportunities = async (query: any) => {
         .sort(sortObj)
         .skip(skip)
         .limit(Number(limit))
-        .select('-rawExtract -dedupeKey') 
+        .select('-rawExtract -dedupeKey')
+        .populate('sourceId', 'name url type')
         .lean(),
       Opportunity.countDocuments(filter)
     ]);
@@ -57,7 +58,8 @@ export const getPublishedOpportunities = async (query: any) => {
         .sort(sortObj)
         .skip(skip)
         .limit(Number(limit))
-        .select('-rawExtract -dedupeKey') 
+        .select('-rawExtract -dedupeKey')
+        .populate('sourceId', 'name url type')
         .lean(),
       Opportunity.countDocuments(filter)
     ]);
@@ -68,7 +70,10 @@ export const getPublishedOpportunities = async (query: any) => {
   }
 
   // Perform In-Memory Cosine Similarity
-  const allOpps = await Opportunity.find(filter).select('-rawExtract -dedupeKey').lean();
+  const allOpps = await Opportunity.find(filter)
+    .select('-rawExtract -dedupeKey')
+    .populate('sourceId', 'name url type')
+    .lean();
   
   const scoredOpps = allOpps.map(opp => {
     let score = 0;

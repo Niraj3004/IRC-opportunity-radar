@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader } from './Card';
 import { Badge } from './Badge';
-import { Bookmark, Clock, MapPin, Building2, ExternalLink } from 'lucide-react';
+import { Bookmark, Clock, MapPin, Building2, ExternalLink, Database } from 'lucide-react';
 import { Button } from './Button';
 
 export interface Opportunity {
@@ -17,6 +17,11 @@ export interface Opportunity {
   amount?: string;
   createdAt: string;
   publishedAt?: string;
+  sourceId?: {
+    name: string;
+    url?: string;
+    type?: string;
+  };
 }
 
 interface OpportunityCardProps {
@@ -67,6 +72,12 @@ export const OpportunityCard = ({ opportunity, isBookmarked, onToggleBookmark }:
               <span className="flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5" />
                 {opportunity.location}
+              </span>
+            )}
+            {opportunity.sourceId && opportunity.sourceId.name && (
+              <span className="flex items-center gap-1">
+                <Database className="h-3.5 w-3.5" />
+                {opportunity.sourceId.name}
               </span>
             )}
           </div>

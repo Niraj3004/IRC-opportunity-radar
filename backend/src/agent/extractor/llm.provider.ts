@@ -1,10 +1,11 @@
 import { GoogleGenAI } from '@google/genai';
+import { z } from 'zod';
 import { env } from '../../config/env.config';
 import { opportunityExtractionSchema, ExtractedOpportunity } from './schemas';
 
 let currentGeminiKeyIndex = 0;
 
-export const extractWithLLM = async (html: string): Promise<ExtractedOpportunity> => {
+export const extractWithLLM = async (html: string): Promise<ExtractedOpportunity[]> => {
   const provider = env.LLM_PROVIDER;
   
   if (provider === 'none') {
@@ -23,7 +24,7 @@ export const extractWithLLM = async (html: string): Promise<ExtractedOpportunity
         const ai = new GoogleGenAI({ apiKey });
         const response = await ai.models.generateContent({
           model: env.LLM_MODEL || 'gemini-3.6-flash',
-          contents: `Extract the scholarship/opportunity details from the following HTML into JSON matching this schema:
+          contents: `Extract ALL scholarships/opportunities from the following HTML into a JSON ARRAY of objects. Each object must match this schema:
 {
   "title": "string",
   "type": "grant|cfp|conference|hackathon|competition|workshop|fellowship|scholarship",
@@ -41,7 +42,7 @@ ${html}`,
              responseMimeType: 'application/json',
           }
         });
-        rawJson = response.text || '{}';
+        rawJson = response.text || '[]';
       } else if (provider === 'groq' || provider === 'ollama') {
         // Use generic OpenAI-compatible fetch
         const baseUrl = provider === 'groq' 
@@ -58,7 +59,7 @@ ${html}`,
             model: env.LLM_MODEL || 'llama3-8b-8192',
             messages: [{
               role: 'user',
-              content: `Extract opportunity details into valid JSON matching this schema: title(string), type(grant|cfp|conference|hackathon|competition|workshop|fellowship|scholarship), organization(string), deadline(ISO date), applyUrl(url), eligibility(string), amount(string), tags(string[]). Return ONLY raw JSON.\n\n${html}`
+              content: `Extract ALL opportunity details into a JSON ARRAY of objects matching this schema: title(string), type(grant|cfp|conference|hackathon|competition|workshop|fellowship|scholarship), organization(string), deadline(ISO date), applyUrl(url), eligibility(string), amount(string), tags(string[]). Return ONLY raw JSON array.\n\n${html}`
             }],
             response_format: { type: 'json_object' }
           })
@@ -70,7 +71,9 @@ ${html}`,
       }
 
       const parsed = JSON.parse(rawJson);
-      const validated = opportunityExtractionSchema.parse(parsed);
+      // Validate that it is an array of opportunities
+      const arraySchema = z.array(opportunityExtractionSchema);
+      const validated = arraySchema.parse(Array.isArray(parsed) ? parsed : [parsed]);
       return validated;
 
     } catch (error: any) {

@@ -42,9 +42,9 @@ export const extractData = async (
       throw new Error('No HTML content provided to extractor');
     }
     
-    const validated = await extractWithLLM(fetchResult.html);
+    const validatedArray = await extractWithLLM(fetchResult.html);
     return { 
-      extractedItems: [validated], 
+      extractedItems: validatedArray, 
       rawExtracts: [fetchResult.html.substring(0, 5000)] // Store truncated raw HTML
     };
   }
