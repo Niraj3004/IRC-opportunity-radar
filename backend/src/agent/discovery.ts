@@ -3,10 +3,21 @@ import Source from '../models/Source';
 import { env } from '../config/env.config';
 
 const SEARCH_PROMPTS = [
-  'Search the web for 5 new, active research grants for 2026. Return ONLY a valid JSON array of their official URL strings.',
+  // Global & General Research
+  'Search the web for 5 new, active international research grants for 2026. Return ONLY a valid JSON array of their official URL strings.',
   'Search the web for 5 upcoming tech hackathons for researchers. Return ONLY a valid JSON array of their official URL strings.',
   'Search the web for 5 active undergraduate research scholarships. Return ONLY a valid JSON array of their official URL strings.',
-  'Search the web for 5 current call for papers in computer science. Return ONLY a valid JSON array of their official URL strings.'
+  
+  // Nepal Specific
+  'Search the web for 5 upcoming research funding opportunities or grants specifically in Nepal. Return ONLY a valid JSON array of their official URL strings.',
+  'Search the web for 5 upcoming tech hackathons happening in Nepal. Return ONLY a valid JSON array of their official URL strings.',
+  'Search the web for 5 active university research projects in Nepal or international collaborative projects involving Nepal. Return ONLY a valid JSON array of their official URL strings.',
+  
+  // NGOs, INGOs & UNO
+  'Search the web for 5 active grants or funding opportunities from NGOs, INGOs, or the UN (UNO) for development projects. Return ONLY a valid JSON array of their official URL strings.',
+  
+  // Startups & Software Development
+  'Search the web for 5 active startup funding opportunities or grants for software development projects (like building apps/websites). Return ONLY a valid JSON array of their official URL strings.'
 ];
 
 let currentGeminiKeyIndex = 0;
