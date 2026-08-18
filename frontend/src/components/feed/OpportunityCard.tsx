@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from './Card';
 import { Badge } from './Badge';
 import { Bookmark, Clock, MapPin, Building2, ExternalLink, Database } from 'lucide-react';
@@ -49,7 +50,7 @@ export const OpportunityCard = ({ opportunity, isBookmarked, onToggleBookmark }:
   return (
     <Card className="hover:border-primary/50 transition-colors">
       <CardHeader className="pb-3 flex flex-row items-start justify-between">
-        <div className="space-y-1.5">
+        <Link to={`/opportunity/${opportunity._id}`} className="space-y-1.5 flex-1 hover:opacity-80 transition-opacity">
           <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="outline" className="uppercase tracking-wider text-[10px]">
               {opportunity.type}
@@ -81,11 +82,14 @@ export const OpportunityCard = ({ opportunity, isBookmarked, onToggleBookmark }:
               </span>
             )}
           </div>
-        </div>
+        </Link>
 
         <button 
-          onClick={() => onToggleBookmark(opportunity._id)}
-          className="text-gray-500 hover:text-primary transition-colors p-1"
+          onClick={(e) => {
+            e.preventDefault();
+            onToggleBookmark(opportunity._id);
+          }}
+          className="text-gray-500 hover:text-primary transition-colors p-1 z-10"
           title={isBookmarked ? "Remove Bookmark" : "Bookmark"}
         >
           <Bookmark className={`h-5 w-5 ${isBookmarked ? "fill-primary text-primary" : ""}`} />
@@ -93,18 +97,20 @@ export const OpportunityCard = ({ opportunity, isBookmarked, onToggleBookmark }:
       </CardHeader>
       
       <CardContent>
-        <div className="flex flex-wrap gap-2 mb-4">
-          {opportunity.tags.slice(0, 4).map(tag => (
-            <span key={tag} className="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-md">
-              {tag}
-            </span>
-          ))}
-          {opportunity.tags.length > 4 && (
-            <span className="text-xs text-gray-500 py-1">
-              +{opportunity.tags.length - 4} more
-            </span>
-          )}
-        </div>
+        <Link to={`/opportunity/${opportunity._id}`}>
+          <div className="flex flex-wrap gap-2 mb-4 hover:opacity-80 transition-opacity">
+            {opportunity.tags.slice(0, 4).map(tag => (
+              <span key={tag} className="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-md">
+                {tag}
+              </span>
+            ))}
+            {opportunity.tags.length > 4 && (
+              <span className="text-xs text-gray-500 py-1">
+                +{opportunity.tags.length - 4} more
+              </span>
+            )}
+          </div>
+        </Link>
 
         <div className="flex items-center justify-between border-t border-gray-800 pt-4 mt-4">
           <div className="flex flex-col">
@@ -121,11 +127,16 @@ export const OpportunityCard = ({ opportunity, isBookmarked, onToggleBookmark }:
             )}
           </div>
 
-          <a href={opportunity.applyUrl || opportunity.url} target="_blank" rel="noopener noreferrer">
-            <Button variant="outline" size="sm" className="gap-2">
-              Apply <ExternalLink className="h-3 w-3" />
-            </Button>
-          </a>
+          <div className="flex gap-2">
+            <Link to={`/opportunity/${opportunity._id}`}>
+              <Button variant="outline" size="sm">Details</Button>
+            </Link>
+            <a href={opportunity.applyUrl || opportunity.url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
+              <Button variant="outline" size="sm" className="gap-2">
+                Apply <ExternalLink className="h-3 w-3" />
+              </Button>
+            </a>
+          </div>
         </div>
       </CardContent>
     </Card>

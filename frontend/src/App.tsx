@@ -15,6 +15,7 @@ import { VerifyEmail } from './pages/auth/VerifyEmail';
 
 // Dashboard Pages
 import { Feed } from './pages/dashboard/Feed';
+import { OpportunityDetail } from './pages/dashboard/OpportunityDetail';
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ function App() {
             <Route element={<RequireRole allowedRoles={['member', 'curator', 'admin', 'super_admin']} />}>
               <Route element={<AppLayout />}>
                 <Route path="/" element={<Feed />} />
+                <Route path="/opportunity/:id" element={<OpportunityDetail />} />
                 <Route path="/bookmarks" element={<Placeholder title="Bookmarks" />} />
                 <Route path="/applied" element={<Placeholder title="Applied Tracker" />} />
                 <Route path="/alerts" element={<Placeholder title="Alerts & Interests" />} />
