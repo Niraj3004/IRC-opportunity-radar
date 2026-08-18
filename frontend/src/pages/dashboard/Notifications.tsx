@@ -10,7 +10,7 @@ export const Notifications = () => {
     queryKey: ['notifications'],
     queryFn: async () => {
       const res = await api.get('/notifications');
-      return res.data.data;
+      return res.data.data.items;
     },
   });
 

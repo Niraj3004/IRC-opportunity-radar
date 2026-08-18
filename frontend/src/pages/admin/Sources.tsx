@@ -28,7 +28,7 @@ export const Sources = () => {
     queryFn: async () => {
       if (!viewingLogsFor) return [];
       const res = await api.get(`/admin/sources/${viewingLogsFor}/logs`);
-      return res.data.data;
+      return res.data.data.items;
     },
     enabled: !!viewingLogsFor
   });

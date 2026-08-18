@@ -16,7 +16,7 @@ export const useNotifications = (isAuthenticated: boolean) => {
     queryKey: ['notifications'],
     queryFn: async () => {
       const res = await api.get('/notifications');
-      return res.data.data as Notification[];
+      return res.data.data.items as Notification[];
     },
     enabled: isAuthenticated, // Only fetch if the user is logged in
     refetchInterval: 60000, // Auto-refresh every 60 seconds
