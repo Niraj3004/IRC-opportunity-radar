@@ -22,7 +22,7 @@ export const Login = () => {
       const res = await api.post('/auth/login', { email, password });
       
       if (res.data.success) {
-        login(res.data.data.accessToken, res.data.data.user);
+        login(res.data.data.accessToken, res.data.data.refreshToken, res.data.data.user);
         navigate('/');
       }
     } catch (err: any) {

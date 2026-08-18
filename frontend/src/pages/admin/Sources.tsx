@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
-import { Database, Plus, RefreshCw, Trash2, ExternalLink } from 'lucide-react';
+import { Database, Plus, RefreshCw, Trash2, ExternalLink, Beaker, X } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 
 export const Sources = () => {
   const queryClient = useQueryClient();
   const [isAdding, setIsAdding] = useState(false);
+  const [testResult, setTestResult] = useState<any>(null);
   const [newSource, setNewSource] = useState({ name: '', url: '', type: 'rss' });
 
   const { data: sources, isLoading } = useQuery({
@@ -32,6 +33,19 @@ export const Sources = () => {
   const fetchMutation = useMutation({
     mutationFn: async (id: string) => {
       await api.post(`/admin/sources/${id}/fetch`);
+    }
+  });
+
+  const testFetchMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await api.post(`/admin/sources/${id}/test`);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      setTestResult(data);
+    },
+    onError: (err: any) => {
+      alert(err.response?.data?.error || 'Test fetch failed');
     }
   });
 
@@ -122,6 +136,14 @@ export const Sources = () => {
               
               <div className="flex gap-2">
                 <button 
+                  onClick={() => testFetchMutation.mutate(source._id)}
+                  disabled={testFetchMutation.isPending}
+                  className="text-gray-500 hover:text-blue-400 transition-colors disabled:opacity-50"
+                  title="Test Fetch Preview"
+                >
+                  <Beaker className="h-4 w-4" />
+                </button>
+                <button 
                   onClick={() => fetchMutation.mutate(source._id)}
                   disabled={fetchMutation.isPending}
                   className="text-gray-500 hover:text-primary transition-colors disabled:opacity-50"
@@ -166,6 +188,27 @@ export const Sources = () => {
           </div>
         ))}
       </div>
+
+      {testResult && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-surface border border-gray-800 rounded-xl w-full max-w-3xl max-h-[80vh] flex flex-col">
+            <div className="flex justify-between items-center p-4 border-b border-gray-800">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Beaker className="h-5 w-5 text-blue-400" />
+                Test Fetch Preview
+              </h3>
+              <button onClick={() => setTestResult(null)} className="text-gray-400 hover:text-white">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto">
+              <pre className="text-xs text-gray-300 whitespace-pre-wrap">
+                {JSON.stringify(testResult, null, 2)}
+              </pre>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

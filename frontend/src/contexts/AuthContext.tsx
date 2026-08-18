@@ -19,7 +19,7 @@ interface AuthContextType {
   user: User | null;
   token: string | null;
   isLoading: boolean;
-  login: (token: string, userData: User) => void;
+  login: (token: string, refreshToken: string, userData: User) => void;
   logout: () => void;
 }
 
@@ -64,10 +64,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     validateSession();
   }, []);
 
-  const login = (newToken: string, userData: User) => {
+  const login = (newToken: string, newRefreshToken: string, userData: User) => {
     setToken(newToken);
     setUser(userData);
     localStorage.setItem('token', newToken);
+    localStorage.setItem('refreshToken', newRefreshToken);
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
@@ -80,6 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setToken(null);
       setUser(null);
       localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
       window.location.href = '/login';
     }

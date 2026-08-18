@@ -5,7 +5,8 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { 
   ArrowLeft, CalendarPlus, ExternalLink, Bookmark, 
-  Building2, MapPin, Database, Clock, FileText, CheckCircle, DollarSign
+  Building2, MapPin, Database, Clock, FileText, CheckCircle, DollarSign,
+  Flag, CheckSquare
 } from 'lucide-react';
 
 export const OpportunityDetail = () => {
@@ -41,6 +42,22 @@ export const OpportunityDetail = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
     },
+  });
+
+  const markAppliedMutation = useMutation({
+    mutationFn: async () => {
+      await api.patch(`/tracker/${id}`, { status: 'applied' });
+    },
+    onSuccess: () => {
+      alert('Successfully moved to your Applied Tracker!');
+    }
+  });
+
+  const reportMutation = useMutation({
+    mutationFn: async () => {
+      // In a real app this might hit a /reports endpoint or Slack webhook
+      alert('Thanks for reporting! A curator will review this opportunity.');
+    }
   });
 
   // Handle Calendar Download
@@ -166,6 +183,28 @@ export const OpportunityDetail = () => {
                   Calendar
                 </Button>
               )}
+            </div>
+
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                className="flex-1 gap-2"
+                onClick={() => markAppliedMutation.mutate()}
+                isLoading={markAppliedMutation.isPending}
+              >
+                <CheckSquare className="h-4 w-4 text-success" />
+                Mark Applied
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="flex-1 gap-2 border-red-500/20 hover:bg-red-500/10 hover:text-red-400"
+                onClick={() => reportMutation.mutate()}
+                isLoading={reportMutation.isPending}
+              >
+                <Flag className="h-4 w-4" />
+                Report
+              </Button>
             </div>
           </div>
         </div>

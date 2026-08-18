@@ -28,16 +28,23 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // Attempt to refresh token
-        // The backend should read the HTTPOnly refresh token cookie
-        const res = await axios.post(`${API_URL}/api/auth/refresh`, {}, {
+        const storedRefreshToken = localStorage.getItem('refreshToken');
+        if (!storedRefreshToken) throw new Error('No refresh token');
+
+        // Send refresh token in body
+        const res = await axios.post(`${API_URL}/api/auth/refresh`, {
+          refreshToken: storedRefreshToken
+        }, {
           withCredentials: true 
         });
 
         const newToken = res.data.data?.accessToken;
+        const newRefreshToken = res.data.data?.refreshToken;
         
         if (newToken) {
           localStorage.setItem('token', newToken);
+          if (newRefreshToken) localStorage.setItem('refreshToken', newRefreshToken);
+          
           // Update the failed request with the new token and retry
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return api(originalRequest);
@@ -46,6 +53,7 @@ api.interceptors.response.use(
         // Refresh failed (e.g. refresh token expired)
         console.error('Session expired. Logging out.');
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
         
         // Only redirect if not already on the login page to avoid loops
