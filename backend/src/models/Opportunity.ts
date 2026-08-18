@@ -12,6 +12,8 @@ export interface IOpportunity extends Document {
   postedAt?: Date;
   location?: string;
   tags: string[];
+  isPublished: boolean;
+  embedding?: number[];
   eligibility?: string;
   amount?: string;
   sourceId: mongoose.Types.ObjectId;
@@ -46,6 +48,7 @@ const OpportunitySchema = new Schema<IOpportunity>(
     dedupeKey: { type: String, required: true, index: true },
     reviewedBy: { type: Schema.Types.ObjectId, ref: 'User' },
     publishedAt: { type: Date },
+    embedding: { type: [Number], default: [] },
   },
   { timestamps: true }
 );

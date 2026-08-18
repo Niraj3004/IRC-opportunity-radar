@@ -35,9 +35,18 @@ export const processSingleSource = async (source: any) => {
     console.log(`[PIPELINE] Scoring ${newOpportunities.length} new items from ${source.name}...`);
     newOpportunities.forEach(opp => scoreAndRoute(opp));
 
-    // 6. Save
+    // 6. Generate Embeddings & Save
     let itemsNew = 0;
     if (newOpportunities.length > 0) {
+      console.log(`[PIPELINE] Generating embeddings for ${newOpportunities.length} items...`);
+      const { generateEmbedding } = await import('./extractor/embeddings');
+      
+      for (const opp of newOpportunities) {
+        // Construct a semantic string for the embedding
+        const semanticText = `${opp.title}. Type: ${opp.type}. Tags: ${(opp.tags || []).join(', ')}. Eligibility: ${opp.eligibility || 'Any'}.`;
+        opp.embedding = await generateEmbedding(semanticText);
+      }
+
       const savedDocs = await Opportunity.insertMany(newOpportunities);
       itemsNew = savedDocs.length;
 

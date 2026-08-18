@@ -13,7 +13,7 @@ export interface ISource extends Document {
   lastHash?: string;
   lastStatus: 'ok' | 'error' | 'idle';
   config?: mongoose.Schema.Types.Mixed; // per-source mapping/selector hints
-  createdBy: mongoose.Types.ObjectId;
+  createdBy?: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,7 +31,7 @@ const SourceSchema = new Schema<ISource>(
     lastHash: { type: String },
     lastStatus: { type: String, enum: ['ok', 'error', 'idle'], default: 'idle' },
     config: { type: Schema.Types.Mixed },
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }
 );

@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import Source from '../models/Source';
+import DiscoveryLog from '../models/DiscoveryLog';
 import { env } from '../config/env.config';
 
 const SEARCH_PROMPTS = [
@@ -30,6 +31,7 @@ export const runDiscovery = async () => {
 
   let attempt = 0;
   const maxRetries = Math.max(3, env.GEMINI_KEYS.length);
+  const startedAt = new Date();
 
   while (attempt <= maxRetries) {
     try {
@@ -50,17 +52,29 @@ export const runDiscovery = async () => {
       
       if (!urls || urls.length === 0) {
         console.log('🌍 [Discovery Agent] AI found no URLs.');
+        await DiscoveryLog.create({
+          runAt: startedAt,
+          promptUsed: prompt,
+          urlsDiscovered: [],
+          urlsAdded: [],
+        });
         return;
       }
 
-      let addedCount = 0;
+      const urlsAdded: string[] = [];
 
       for (const url of urls) {
-        // Skip very generic or unwanted domains
+        // Expanded Blacklist
         if (
           url.includes('wikipedia.org') || 
           url.includes('youtube.com') ||
-          url.includes('facebook.com')
+          url.includes('facebook.com') ||
+          url.includes('linkedin.com') ||
+          url.includes('twitter.com') ||
+          url.includes('x.com') ||
+          url.includes('instagram.com') ||
+          url.includes('reddit.com') ||
+          url.includes('tiktok.com')
         ) {
           continue;
         }
@@ -73,10 +87,11 @@ export const runDiscovery = async () => {
             await Source.create({
               name: 'Auto-Discovered by AI',
               url: url,
-              isActive: true,
-              createdBy: null, // Indicates system created
+              type: 'html',
+              fetchFrequency: '0 */4 * * *',
+              enabled: true,
             });
-            addedCount++;
+            urlsAdded.push(url);
             console.log(`   ✅ [Discovery Agent] Added new source: ${url}`);
           } catch (err: any) {
              console.warn(`   ⚠️ [Discovery Agent] Failed to save source ${url}: ${err.message}`);
@@ -84,7 +99,15 @@ export const runDiscovery = async () => {
         }
       }
       
-      console.log(`🌍 [Discovery Agent] Finished. Added ${addedCount} new sources.`);
+      console.log(`🌍 [Discovery Agent] Finished. Added ${urlsAdded.length} new sources.`);
+      
+      await DiscoveryLog.create({
+        runAt: startedAt,
+        promptUsed: prompt,
+        urlsDiscovered: urls,
+        urlsAdded: urlsAdded,
+      });
+
       return; // Success, exit loop
 
     } catch (error: any) {
@@ -101,6 +124,13 @@ export const runDiscovery = async () => {
 
       if (attempt > maxRetries) {
         console.error(`🌍 [Discovery Agent] Failed after ${maxRetries} retries.`);
+        await DiscoveryLog.create({
+          runAt: startedAt,
+          promptUsed: prompt,
+          urlsDiscovered: [],
+          urlsAdded: [],
+          error: error.message,
+        });
         return;
       }
       
