@@ -15,20 +15,19 @@ import { VerifyEmail } from './pages/auth/VerifyEmail';
 // Dashboard Pages
 import { Feed } from './pages/dashboard/Feed';
 import { OpportunityDetail } from './pages/dashboard/OpportunityDetail';
+import { Bookmarks } from './pages/dashboard/Bookmarks';
+import { AppliedTracker } from './pages/dashboard/AppliedTracker';
 import { Alerts } from './pages/dashboard/Alerts';
+import { Notifications } from './pages/dashboard/Notifications';
 
 // Admin Pages
 import { ReviewQueue } from './pages/admin/ReviewQueue';
+import { KPIs } from './pages/admin/KPIs';
+import { AuditLogs } from './pages/admin/AuditLogs';
+import { Members } from './pages/admin/Members';
+import { Sources } from './pages/admin/Sources';
 
 const queryClient = new QueryClient();
-
-// Placeholder components for Phase F2 testing
-const Placeholder = ({ title }: { title: string }) => (
-  <div className="flex h-[60vh] flex-col items-center justify-center text-center">
-    <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
-    <p className="text-gray-400">This page will be built in an upcoming phase.</p>
-  </div>
-);
 
 function App() {
   return (
@@ -50,10 +49,10 @@ function App() {
               <Route element={<AppLayout />}>
                 <Route path="/" element={<Feed />} />
                 <Route path="/opportunity/:id" element={<OpportunityDetail />} />
-                <Route path="/bookmarks" element={<Placeholder title="Bookmarks" />} />
-                <Route path="/applied" element={<Placeholder title="Applied Tracker" />} />
+                <Route path="/bookmarks" element={<Bookmarks />} />
+                <Route path="/applied" element={<AppliedTracker />} />
                 <Route path="/alerts" element={<Alerts />} />
-                <Route path="/notifications" element={<Placeholder title="Notifications" />} />
+                <Route path="/notifications" element={<Notifications />} />
 
                 {/* Curator+ Routes */}
                 <Route element={<RequireRole allowedRoles={['curator', 'admin', 'super_admin']} />}>
@@ -62,10 +61,10 @@ function App() {
 
                 {/* Admin+ Routes */}
                 <Route element={<RequireRole allowedRoles={['admin', 'super_admin']} />}>
-                  <Route path="/sources" element={<Placeholder title="Sources Management" />} />
-                  <Route path="/members" element={<Placeholder title="Members" />} />
-                  <Route path="/kpis" element={<Placeholder title="KPIs" />} />
-                  <Route path="/logs" element={<Placeholder title="Audit Logs" />} />
+                  <Route path="/sources" element={<Sources />} />
+                  <Route path="/members" element={<Members />} />
+                  <Route path="/kpis" element={<KPIs />} />
+                  <Route path="/logs" element={<AuditLogs />} />
                 </Route>
               </Route>
             </Route>
