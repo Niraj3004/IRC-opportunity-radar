@@ -13,6 +13,9 @@ import { ForgotPassword } from './pages/auth/ForgotPassword';
 import { ResetPassword } from './pages/auth/ResetPassword';
 import { VerifyEmail } from './pages/auth/VerifyEmail';
 
+// Dashboard Pages
+import { Feed } from './pages/dashboard/Feed';
+
 const queryClient = new QueryClient();
 
 // Placeholder components for Phase F2 testing
@@ -41,7 +44,7 @@ function App() {
             {/* Protected Routes (Members+) */}
             <Route element={<RequireRole allowedRoles={['member', 'curator', 'admin', 'super_admin']} />}>
               <Route element={<AppLayout />}>
-                <Route path="/" element={<Placeholder title="Feed" />} />
+                <Route path="/" element={<Feed />} />
                 <Route path="/bookmarks" element={<Placeholder title="Bookmarks" />} />
                 <Route path="/applied" element={<Placeholder title="Applied Tracker" />} />
                 <Route path="/alerts" element={<Placeholder title="Alerts & Interests" />} />
