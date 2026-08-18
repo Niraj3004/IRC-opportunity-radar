@@ -1,9 +1,8 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader } from './Card';
-import { Badge } from './Badge';
+import { Card, CardContent, CardHeader } from '../ui/Card';
+import { Badge } from '../ui/Badge';
 import { Bookmark, Clock, MapPin, Building2, ExternalLink, Database } from 'lucide-react';
-import { Button } from './Button';
+import { Button } from '../ui/Button';
 
 export interface Opportunity {
   _id: string;

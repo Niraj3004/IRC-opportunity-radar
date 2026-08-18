@@ -4,7 +4,7 @@ import { api } from '../../lib/api';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
-import { ExternalLink, CheckCircle, XCircle, Search, LayoutList, Database } from 'lucide-react';
+import { ExternalLink, CheckCircle, XCircle, LayoutList, Database } from 'lucide-react';
 
 export const ReviewQueue = () => {
   const queryClient = useQueryClient();

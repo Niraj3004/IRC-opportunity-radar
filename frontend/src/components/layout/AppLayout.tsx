@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet, NavLink, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNotifications } from '../../hooks/useNotifications';
@@ -7,7 +6,6 @@ import {
   Bookmark, 
   Send, 
   BellRing, 
-  Settings, 
   CheckSquare, 
   Database, 
   Users, 

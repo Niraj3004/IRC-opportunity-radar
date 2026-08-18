@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { api } from '../../lib/api';
-import { OpportunityCard, Opportunity } from '../../components/feed/OpportunityCard';
-import { Input } from '../../components/ui/Input';
+import { OpportunityCard, type Opportunity } from '../../components/feed/OpportunityCard';
 import { Button } from '../../components/ui/Button';
 import { Filter, Search } from 'lucide-react';
 
