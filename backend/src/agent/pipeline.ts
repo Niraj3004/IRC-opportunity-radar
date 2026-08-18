@@ -98,6 +98,9 @@ export const runAgentPipeline = async () => {
 
   for (const source of activeSources) {
     await processSingleSource(source);
+    // Give the Free APIs a 5-second rest between websites so we don't get banned!
+    console.log('💤 Pipeline resting for 5 seconds to protect Free API limits...');
+    await new Promise(resolve => setTimeout(resolve, 5000));
   }
   console.log('🏁 Agent Pipeline run completed.');
 };

@@ -2,8 +2,8 @@ import cron from 'node-cron';
 import { runAgentPipeline } from '../agent/pipeline';
 
 export const startAgentJob = () => {
-  // Run every 4 hours automatically
-  cron.schedule('0 */4 * * *', async () => {
+  // Run ONCE a day at 2:00 AM to give free APIs a long rest
+  cron.schedule('0 2 * * *', async () => {
     console.log('🤖 Automaton: Waking up AI Agent Pipeline...');
     try {
       await runAgentPipeline();
