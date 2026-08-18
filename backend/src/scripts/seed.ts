@@ -25,12 +25,13 @@ const seed = async () => {
     email: 'superadmin@test.com',
     passwordHash,
     role: 'super_admin',
-    status: 'active'
+    status: 'active',
+    emailVerified: true
   });
 
   await User.create([
-    { name: 'Alice Member', email: 'member1@test.com', passwordHash, role: 'member', status: 'active', interests: ['Grant'] },
-    { name: 'Bob Member', email: 'member2@test.com', passwordHash, role: 'member', status: 'active', interests: ['Job'] }
+    { name: 'Alice Member', email: 'member1@test.com', passwordHash, role: 'member', status: 'active', emailVerified: true, interests: ['Grant'] },
+    { name: 'Bob Member', email: 'member2@test.com', passwordHash, role: 'member', status: 'active', emailVerified: true, interests: ['Job'] }
   ]);
   console.log('✅ Users seeded');
 

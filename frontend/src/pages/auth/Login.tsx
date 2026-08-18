@@ -26,7 +26,7 @@ export const Login = () => {
         navigate('/');
       }
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Invalid credentials or account is not approved.');
+      setError(err.response?.data?.message || 'Invalid credentials or account is not approved.');
     } finally {
       setIsLoading(false);
     }
